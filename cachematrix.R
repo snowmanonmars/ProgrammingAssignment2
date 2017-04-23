@@ -1,15 +1,44 @@
-## Put comments here that give an overall description of what your
-## functions do
+## By assigning the call of makeCacheMatrix, 
+## e.g. m1 <-makeCacheMatrix(matrix(1:4,2,2)), 
+## you create a list of functions defined
+## in the execution environment of makeCacheMatrix 
+## with the execution environment fixed for further reference, 
+## i.e. on the variables such as x and inv.
+## (while normally the execution environment should disappear after evaluation 
+## of the function.)
+## By passing m1 to cacheSolve,
+##
 
-## Write a short comment describing this function
-
-makeCacheMatrix <- function(x = matrix()) {
-
+makeCacheMatrix <- function(x = matrix()){
+    inv <- NULL
+    
+    setmatrix <- function(y){
+        x <<- y
+        inv <-NULL
+    }
+    getmatrix <- function()x
+    setinv <- function(inverse) inv <<- inverse
+    getinv <- function() inv
+    list(setmatrix = setmatrix, getmatrix = getmatrix,
+         setinv = setinv, 
+         getinv = getinv )
 }
 
+## Look the mentions inside the code
 
-## Write a short comment describing this function
-
-cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+cacheSolve <- function(x, ...){
+    inv <- x$getinv()
+    if(!is.null(inv)) {
+        message("getting cached data")
+        return(inv)
+        ## Return a matrix that is the inverse of 'x' when it is cached in the
+        ## environment of reference
+    }
+    matrix <- x$getmatrix()
+    inv <- solve(matrix)
+    x$setinv(inv)
+    inv
+        ## Calculate the inverse of the matrix, assign it as inv in the reference 
+        ## environment, and show it.
 }
+        
