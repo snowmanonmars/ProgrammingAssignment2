@@ -1,4 +1,4 @@
-## By assigning the call of makeCacheMatrix, 
+## By assigning the call of makeCacheMatrix to an object, 
 ## e.g. m1 <-makeCacheMatrix(matrix(1:4,2,2)), 
 ## you create a list of functions defined
 ## in the execution environment of makeCacheMatrix 
@@ -7,19 +7,19 @@
 ## (while normally the execution environment should disappear after evaluation 
 ## of the function.)
 ## By passing m1 to cacheSolve,
-##
+## function cacheSolve accesses the functions in the list of m1 and use them 
+## to check if a cached inv value exists in the reference environment, 
+## return it if it exists
+## or calculate and assign it to inv in the reference environment as new.
 
 makeCacheMatrix <- function(x = matrix()){
     inv <- NULL
-    
-    setmatrix <- function(y){
-        x <<- y
-        inv <-NULL
-    }
+    setmatrix <- function(y)x <<- y
     getmatrix <- function()x
     setinv <- function(inverse) inv <<- inverse
     getinv <- function() inv
-    list(setmatrix = setmatrix, getmatrix = getmatrix,
+    list(setmatrix = setmatrix, 
+         getmatrix = getmatrix,
          setinv = setinv, 
          getinv = getinv )
 }
@@ -41,4 +41,3 @@ cacheSolve <- function(x, ...){
         ## Calculate the inverse of the matrix, assign it as inv in the reference 
         ## environment, and show it.
 }
-        
